@@ -6,7 +6,7 @@
 
 // Data
 const account1 = {
-  owner: 'Jonas Schmedtmann',
+  owner: 'Manish Budhathoki',
   movements: [200, 450, -400, 3000, -650, -130, 70, 1300],
   interestRate: 1.2, // %
   pin: 1111,
@@ -61,10 +61,11 @@ const inputLoanAmount = document.querySelector('.form__input--loan-amount');
 const inputCloseUsername = document.querySelector('.form__input--user');
 const inputClosePin = document.querySelector('.form__input--pin');
 
-const displayMovements=function(movements){
+const displayMovements=function(movements,sort=false){
   containerMovements.innerHTML='';
-  movements.forEach(function(mov,i){
-    const type=mov>0? 'deposit':'withdrawal'
+  const movs=sort? movements.slice().sort((a,b)=>a-b):movements;
+  movs.forEach(function(mov,i){
+    const type=mov>0? 'deposit':'withdrawal';
     const html=`
       <div class="movements__row">
           <div class="movements__type movements__type--deposit">${i+1} ${type}</div>
@@ -100,6 +101,14 @@ const createUserName=function(accs){
   
 };
 createUserName(accounts);
+const updateUI=function(acc){
+  //Display movements
+  displayMovements(acc.movements);
+  //Display Balance
+  calcDisplayBalance(acc);
+  //Display summary
+  calcDisplaySummary(acc);
+};
 ///EVENT HANDLERS
 let currentAccount; 
 btnLogin.addEventListener('click',function(e){
@@ -115,25 +124,82 @@ btnLogin.addEventListener('click',function(e){
     //clearInput Fields
     inputLoginUsername.value=inputLoginPin.value='';
     inputLoginPin.blur();
-    //Display movements
-    displayMovements(currentAccount.movements);
-    //Display Balance
-    calcDisplayBalance(currentAccount);
-    //Display summary
-    calcDisplaySummary(currentAccount);
+    updateUI(currentAccount);
+    
   }
-})
+});
+//LOAN FUNTIONALITTY
+btnLoan.addEventListener('click',function(e){
+  e.preventDefault();
+  const amount=Number(inputLoanAmount.value);
+  
+  if(amount>0 && currentAccount.movements.some(mov=>mov>=amount*0.1)){
+    //Add movement
+    currentAccount.movements.push(amount);
+    //update UI
+    updateUI(currentAccount);
+  }
+  inputLoanAmount.value='';
+});
 //FOR TRANSFER FUNCTIONALITY
 btnTransfer.addEventListener('click',function(e){
   e.preventDefault();
   const amount=Number(inputTransferAmount.value);
   const receiverAcc=accounts.find(acc=>acc.username===inputTransferTo.value);
-  console.log(amount,receiverAcc);
+  inputTransferAmount.value=inputTransferTo.value='';
   if(amount>0 && currentAccount.balance>=amount && receiverAcc?.username!==currentAccount.username){
-    console.log('Transfer VALID');
+    //For Transfer
+    currentAccount.movements.push(-amount);
+    receiverAcc.movements.push(amount);
+    //Update UI
+    updateUI(currentAccount);
   }
-  
+});
+btnClose.addEventListener('click',function(e){
+  e.preventDefault();
+  console.log('DELETE');
+  if(inputCloseUsername.value===currentAccount.username&& Number(inputClosePin.value)===currentAccount.pin){
+    inputCloseUsername.value=inputClosePin.value='';
+    const index=accounts.findIndex(acc=>acc.username===currentAccount.username);
+    console.log(index);
+    //Delete Account
+    accounts.splice(index,1);
+    //Hide UI
+    containerApp.style.opacity=0;
+  }
+});
+let sorted=false;
+btnSort.addEventListener('click',function(e){
+  e.preventDefault();
+  displayMovements(currentAccount.movements,!sorted);
+  sorted=!sorted;
 })
+  
+
 /////LECTURES
 const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
- 
+// console.log(movements.includes(-130));
+// //CONDITION
+// const anydeposits=movements.some(mov=>mov>500);
+// console.log(anydeposits);
+// //Every
+// // console.log(account4.movements.every(mov=>mov>0));
+// // const accountMovement=accounts.map(acc=>acc.movements);
+// // console.log(accountMovement);
+// // const allMovements=accountMovement.flat();
+// // console.log(allMovements);
+// // const sum=allMovements.reduce((acc,mov)=>acc+mov,0);
+// // console.log(sum);
+// const sum=accounts.map((acc)=>acc.movements).flat().reduce((acc,mov)=>acc+mov,0);
+// console.log(sum);
+// const owners=['jonas','zach','adam','martha'];
+// console.log(owners.sort());
+// console.log(owners);
+// //Numbers
+// console.log(movements);
+// console.log(movements.sort());
+// movements.sort((a,b)=>{
+//   if(a>b) return 1;
+//   if(b>a) return -1;
+// })
+// console.log(movements);
