@@ -174,32 +174,3 @@ btnSort.addEventListener('click',function(e){
   displayMovements(currentAccount.movements,!sorted);
   sorted=!sorted;
 })
-  
-
-/////LECTURES
-const movements = [200, 450, -400, 3000, -650, -130, 70, 1300];
-// console.log(movements.includes(-130));
-// //CONDITION
-// const anydeposits=movements.some(mov=>mov>500);
-// console.log(anydeposits);
-// //Every
-// // console.log(account4.movements.every(mov=>mov>0));
-// // const accountMovement=accounts.map(acc=>acc.movements);
-// // console.log(accountMovement);
-// // const allMovements=accountMovement.flat();
-// // console.log(allMovements);
-// // const sum=allMovements.reduce((acc,mov)=>acc+mov,0);
-// // console.log(sum);
-// const sum=accounts.map((acc)=>acc.movements).flat().reduce((acc,mov)=>acc+mov,0);
-// console.log(sum);
-// const owners=['jonas','zach','adam','martha'];
-// console.log(owners.sort());
-// console.log(owners);
-// //Numbers
-// console.log(movements);
-// console.log(movements.sort());
-// movements.sort((a,b)=>{
-//   if(a>b) return 1;
-//   if(b>a) return -1;
-// })
-// console.log(movements);
